@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- Form View Section -->
+		<record id="channel_process_import_export_from_more_view"
+			model="ir.ui.view">
+			<field name="name">Process Import/Export</field>
+			<field name="model">channel.process.import.export</field>
+			<field name="priority">100</field>
+			<field name="arch" type="xml">
+				<form string="Import/Export">
+					<group>
+						<field name="instance_ids" widget="many2many_tags"
+							domain="[('state','=','confirmed')]"
+							options="{'no_create':True,'no_create_edit': True}" required="1" />
+					</group>
+					<footer>
+						<button string="Prepare" class="oe_highlight" type="object"
+							name="prepare_product_for_export"
+							invisible="context.get('process','') != 'prepare_product_for_export'" />
+						<button string="Cancel" class="oe_highlight"
+							special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<!-- Action Menu -->
+		<record id="channel_prepare_product_for_export_action"
+			model="ir.actions.act_window">
+			<field name="name">Prepare Product For Export In Channel Engine
+			</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">channel.process.import.export</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<!-- TODO: check if we need this -->
+			<field name="binding_model_id"
+				ref="product.model_product_template" />
+			<field name="binding_view_types">list,form</field>
+			<field name="view_id"
+				ref="channel_process_import_export_from_more_view" />
+			<field name="context"
+				eval="{'process': 'prepare_product_for_export'}" />
+		</record>
+
+	</data>
+</odoo>

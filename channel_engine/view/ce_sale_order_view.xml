@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data>
+		
+ 		<!-- Search View Section -->
+		<record id="channel_quotations_inherit_order_search_view" model="ir.ui.view">
+			<field name="name">Channel Sales Order Filter</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_sales_order_filter" />
+			<field name="arch" type="xml">
+				<filter name="my_sale_orders_filter" position="after">
+					<separator/>
+                    <filter string="Not updated in CE" name="is_order_updated_in_channel" domain="[('is_order_updated_in_channel','=',False)]"/>
+                    <!-- <filter string="Not updated in CE" name="is_order_not_updated_in_channel" domain="[('is_order_updated_in_channel','=',False)]"/> -->
+				</filter>				
+				<xpath expr="//search/group[1]" position="inside">
+					<filter string="Channel Instance" name="instance_id" domain="[]" context="{'group_by':'instance_id'}" />
+				</xpath>
+			</field>
+		</record>
+		
+		<!-- Tree View Section -->
+		<record id="channel_quotations_inherit_order_tree_view" model="ir.ui.view">
+			<field name="name">channel.engine.quotations.tree</field>
+			<field name="model">sale.order</field>
+			<field name="priority">100</field>
+			<field name="arch" type="xml">
+				<tree string="Channel Engine Sale Order Tree View" create="false">
+					<field name="name" string="Order Number" decoration-bf="1" />
+					<field name="date_order" />
+					<field name="partner_id" />
+					<field name="user_id" widget="many2one_avatar_user" />
+					<field name="company_id" />
+					<field name="amount_total" sum="Total Tax Included" widget="monetary" decoration-bf="1" />
+					<field name="is_order_updated_in_channel" />
+					<field name="state" decoration-success="state == 'invoiced'" decoration-info="state == 'to invoice'" decoration-warning="state == 'upselling'" widget="badge" />
+				</tree>
+			</field>
+		</record>
+		
+		<!-- Form View Section -->
+		<record id="channel_quotations_inherit_order_form_view" model="ir.ui.view">
+			<field name="name">channel.engine.quotations.form</field>
+			<field name="model">sale.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<data>
+					<notebook position="inside">
+						<page string="Channel Engine Info" attrs="{'invisible':[('instance_id','=',False)]}">
+							<group>
+								<group>
+									<field name="channel_order_no" readonly="True" />
+									<field name="instance_id" string="Channel Insatnce" readonly="True" />
+									<field name="channel_name" readonly="True"/>
+								</group>
+								<group>
+									<field name="channel_order_id" readonly="True" />
+									<field name="merchant_order_no" attrs="{'readonly':[('is_send_acknowledge_order','=',True)]}"/>
+									<field name="is_send_acknowledge_order" readonly="True" />
+									<field name="is_order_updated_in_channel" />
+									<field name="is_already_download_packing_slip" readonly="1" />
+								</group>
+							</group>	
+						</page>
+					</notebook>
+				</data>
+			</field>
+		</record>
+		
+		<!-- Action Section -->
+		<record id="channel_engine_quotations_action" model="ir.actions.act_window">
+			<field name="name">Channel Engine Quotations</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{}</field>
+			<field name="domain">[('channel_order_no','!=',False),('state','in',('draft','sent','cancel'))]</field>
+			<field name="view_id" ref="channel_quotations_inherit_order_tree_view" />
+			<field name="search_view_id" ref="channel_quotations_inherit_order_search_view" />
+			<field name="help" type="html">
+				<div class="">
+					<br />
+					<p>
+						<b>There aren't any Sale Orders synchronised from any of your Channels yet.</b>
+					</p>
+					<p>
+						In order to see sales orders here, you need to import them from your Channel Engine instance.
+						The import can be performed in 2 ways.
+					</p>
+					<p>
+						<b>1.</b>
+						Via automatic jobs to import Sale Orders at frequent amount of time.
+						<br />
+						Go to menu <b>Settings >> Technical >> Automation >> Schedule Actions</b>
+						and activate automatic Job to Import Orders from Channel Engine.
+						However from Channel Engine settings you can set your preferred timings for automatically
+						importing Sale Orders from Channel Engine.
+					</p>
+					<p>
+						<b>2.</b>
+						Manually import Orders at any time.
+						<br />
+						Go to menu Channel Engine >> Channel Engine &lt;=> Odoo >> Channel Operations and select your
+						instances and tick the option "Import Sale Order".
+						Then click on "Execute" button, it will import all new
+						orders from Channel Engine to Odoo.
+					</p>
+					<p>
+						<b>Note: </b>
+						Before importing orders, you must configure workflow for orders.
+						<br />
+						Go to Channel Engine >> Configuration >> Sale Auto Workflow Configuration to do that.
+					</p>
+				</div>
+			</field>
+		</record>
+		
+		<record id="channel_engine_sales_orders_action" model="ir.actions.act_window">
+			<field name="name">Channel Engine Sales Orders</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{}</field>
+			<field name="domain">[('channel_order_no','!=',False),('state','not in',('draft','sent','cancel'))]</field>
+			<field name="view_id" ref="channel_quotations_inherit_order_tree_view" />
+			<field name="search_view_id" ref="sale.view_sales_order_filter" />
+			<field name="help" type="html">
+				<div class="">
+					<br />
+					<p>
+						<b>There aren't any Sale Orders synchronised from any of your Channels yet.</b>
+					</p>
+					<p>
+						In order to see sales orders here, you need to import them from your Channel Engine instance.
+						The import can be performed in 2 ways.
+					</p>
+					<p>
+						<b>1.</b>
+						Via automatic jobs to import Sale Orders at frequent amount of time.
+						<br />
+						Go to menu <b>Settings >> Technical >> Automation >> Schedule Actions</b>
+						and activate automatic Job to Import Orders from Channel Engine.
+						However from Channel Engine settings you can set your preferred timings for automatically
+						importing Sale Orders from Channel Engine.
+					</p>
+					<p>
+						<b>2.</b>
+						Manually import Orders at any time.
+						<br />
+						Go to menu Channel Engine >> Channel Engine &lt;=> Odoo >> Channel Operations and select your
+						instances and tick the option "Import Sale Order".
+						Then click on "Execute" button, it will import all new
+						orders from Channel Engine to Odoo.
+					</p>
+					<p>
+						<b>Note: </b>
+						Before importing orders, you must configure workflow for orders.
+						<br />
+						Go to Channel Engine >> Configuration >> Sale Auto Workflow Configuration to do that.
+					</p>
+				</div>
+			</field>
+		</record>
+	
+		<!-- Parent/Top Menu Section -->
+		<menuitem id="channel_engine_sales_menu"
+			name="Sales" parent="channel_engine.channel_engine_menu" sequence="1"/>	
+			
+		<!-- Child Menu Section -->
+		<menuitem id="channel_engine_quotations_menu"
+			name="Quotations" parent="channel_engine.channel_engine_sales_menu" sequence="1"
+			action="channel_engine_quotations_action" />
+				
+		<menuitem id="channel_engine_sales_orders_menu"
+			name="Sales Orders" parent="channel_engine.channel_engine_sales_menu" sequence="2"
+			action="channel_engine_sales_orders_action" />	
+		
+	</data>
+</odoo>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="channel_process_import_export" model="ir.ui.view">
+            <field name="name">Process Import/Export</field>
+            <field name="model">channel.process.import.export</field>
+            <field name="arch" type="xml">
+                <form string="Import/Export">
+                	<sheet>
+	                	<group>						                	
+		                	<field name='instance_ids' widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}"/>                	
+	                	</group>
+	                	<notebook>
+	                		<page string="Channel Engine => ERP">
+								<group>
+		                			<group string="Order Operation">
+		                				<!-- Import Sales Orders From Channel Engine -->
+										<field name="is_import_sales_orders" />          		
+									</group>
+									<group string="Product Operation">
+										<field name="is_import_product" />
+									</group>
+								</group>
+								<group>
+									<group>
+		                				<!-- Download CE Order Packing Slip -->
+										<field name="is_download_order_packing_slip" />          		
+									</group>
+									<group>
+									</group>
+								</group>
+	                		</page>
+	                		<page string="ERP => Channel Engine">
+	                			<group>
+		                			<group>
+		                				<!-- Export Product To Channel Engine -->
+		                				<label for="is_export_product"/>
+										<div>
+											<field name="is_export_product" class="oe_inline"/>
+											<!-- <div attrs="{'invisible' : [('is_export_product','=',False)]}">		
+												<label for="is_publish_in_channel" attrs="{'invisible' : [('is_export_product','=',False)]}"/>
+												<field name="is_publish_in_channel" attrs="{'invisible' : [('is_export_product','=',False)]}" class="oe_inline"/>
+											</div> -->
+										</div> 
+										
+										<!-- Update Products Stock To Channel Engine -->
+										<label for="is_update_stock"/>
+										<div>
+											<field name="is_update_stock" class="oe_inline"/>
+										</div> 
+										
+										<!-- Update Products Price To Channel Engine -->
+										<label for="is_update_price"/>
+										<div>
+											<field name="is_update_price" class="oe_inline"/>
+										</div>          		
+									</group>
+									<group>
+										<!-- Send Order Acknowledge In Channel Engine -->
+										<label for="is_send_acknowledge_order"/>
+										<div>
+											<field name="is_send_acknowledge_order" class="oe_inline"/>
+										</div>
+										
+										<!-- Create Shipment(Update Order Status) In Channel Engine -->
+										<label for="is_create_shipment"/>
+										<div>
+											<field name="is_create_shipment" class="oe_inline"/>
+										</div>
+										
+									</group>
+                				</group>
+	                		</page>
+	                	</notebook>	
+						<footer>
+							<button string="Execute" class="oe_highlight" type="object" name="execute"/>
+	                        <button string="Cancel" class="oe_highlight" special="cancel" />
+	                    </footer>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_wizard_channel_import_export_operations" model="ir.actions.act_window">
+         	<field name="name">Channel Operations </field>
+         	<field name="type">ir.actions.act_window</field>
+         	<field name="res_model">channel.process.import.export</field>
+         	<field name="view_mode">form</field>
+         	<field name="target">new</field>
+         </record>
+         
+		
+         <menuitem id="menu_channel_import_export_process" name="Channel Engine &lt;=&gt; Odoo" 
+         parent="channel_engine_menu" sequence="4"/>
+         
+         <menuitem id="menu_channel_import_process" name="Channel Operations" 
+         action="action_wizard_channel_import_export_operations"
+         parent="menu_channel_import_export_process" />
+         
+    </data>
+</odoo>

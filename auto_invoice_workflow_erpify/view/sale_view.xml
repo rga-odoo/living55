@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record model="ir.ui.view" id="view_order_form_ext">
+            <field name="name">View Order Form Ext</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+                	<field name="fiscal_position_id" options="{'no_create': True}" position="after">
+                		<field name="auto_workflow_process_id" />
+                	</field>                	
+	            	<field name="fiscal_position_id" position="after">
+	            		<field name="invoice_policy"/>
+                        <button name="action_invoice_create" string="Create Invoice" type="object"/>
+	            	</field>
+	            	<xpath expr="//field[@name='order_line']/form/group/group" position="inside">
+                        <field name="producturl"/>
+                    </xpath>
+                    <field name="team_id" options="{'no_create': True}" position="after">
+                		<field name="global_channel_id" />
+                        <field name="confirmation_date" />
+                	</field>
+                </data>
+             </field>
+    	</record>
+
+
+
+        <record model="ir.ui.view" id="view_order_form_create_inv_button">
+            <field name="name">View Order Form Ext</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">                  
+                <xpath expr="//header" position="inside">
+                    <button name="action_invoice_create" string="Create Invoice2" type="object" class="oe_highlight" invisible="1"/>
+                </xpath>
+             </field>
+        </record>
+   	</data>
+</openerp>

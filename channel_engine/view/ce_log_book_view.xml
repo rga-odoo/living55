@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>	
+	<data>
+		<!-- Search View Section -->
+		<record id="channel_log_book_search_view" model="ir.ui.view">
+			<field name="name">channel.log.book.search</field>
+			<field name="model">channel.log.book</field>
+			<field name="arch" type="xml">
+				<search string="Channel Process Job">
+					<field name="name" />
+				</search>
+			</field>
+		</record>
+		
+		<!-- Tree View Section -->
+		<record id="channel_log_book_tree_view" model="ir.ui.view">
+			<field name="name">channel.log.book.tree</field>
+			<field name="model">channel.log.book</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Channel Process Job" create="0">
+					<field name="name" />
+					<field name="instance_id" />
+					<field name="operation_type" />
+					<field name="message" />
+					<field name="skip_process" />
+					<field name="create_date" />
+				</tree>
+			</field>
+		</record>
+		
+		<!-- Form View Section -->
+		<record id="channel_log_book_form_view" model="ir.ui.view">
+			<field name="name">channel.log.book.form</field>
+			<field name="model">channel.log.book</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Channel Process Job" create="false" edit="false">
+					<sheet>
+						<group string="General Info">
+							<group>
+								<field name="name" readonly="1" />
+								<field name="instance_id" readonly="1" />
+							</group>
+							<group>
+								<field name="create_date" readonly="1" />
+								<field name="application" readonly="1" />
+								<field name="operation_type" readonly="1" />
+								<field name="skip_process" readonly="1" />
+							</group>
+						</group>
+						<group string="Message" colspan="4">
+							<field name="message" readonly="1" nolabel="1" />
+						</group>
+						<group string="Channel Lines Log" colspan="4">
+							<field name="channel_log_book_line_ids" nolabel="1" readonly="1">
+								<tree>
+									<field name="record_id" />
+									<field name="channel_order_ref" />
+									<field name="action_type" />
+									<field name="message" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<!-- Action Section -->
+		<record id="channel_log_book_action" model="ir.actions.act_window">
+			<field name="name">Channel Process Job Log</field>
+			<field name="res_model">channel.log.book</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="channel_log_book_tree_view" />
+			<field name="search_view_id" ref="channel_log_book_search_view" />
+		</record>
+		
+		<!-- Top Menu Section -->
+		<menuitem id="channel_log_book_parent_menu" name="Channel Log Details"
+			parent="channel_engine.channel_engine_menu" sequence="5" />
+
+		<!-- Parent Menu Section -->
+		<menuitem id="channel_log_book_menu" name="Job Logs"
+			parent="channel_log_book_parent_menu" sequence="1"
+			action="channel_log_book_action" />
+	</data>
+</odoo>

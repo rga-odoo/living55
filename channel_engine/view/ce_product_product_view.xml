@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+	
+		<!-- Channel Engine Variant Product Section -->
+		
+		<!-- Search View Section -->
+		<record id="channel_variant_product_search_view" model="ir.ui.view">
+			<field name="name">channel.variant.product.search</field>
+			<field name="model">channel.product.product</field>
+			<field name="arch" type="xml">
+				<search string="Channel Variant Products Search View">
+					<field name="name" />
+					<field name="instance_id" string="Channel Instance"/>
+					<filter name="exported_in_channel_filter" string="Exported In Channel" domain="[('exported_in_channel','=',True)]" />
+					<filter name="not_exported_in_channel_filter" string="Not Exported In Channel" domain="[('exported_in_channel','=',False)]" />
+					
+					<filter name="isactive_in_channel_filter" string="Active In Channel" domain="[('is_active_in_channel','=',True)]" />
+					<filter name="is_not_active_in_channel_filter" string="Not Active In Channel" domain="[('is_active_in_channel','=',False)]" />
+					
+					<group expand="0" string="Group By">
+						<filter string="Channel Instance" name="channel_instance" icon="terp-personal" context="{'group_by':'instance_id'}" />
+						<filter string="Is active in CE?" name="is_active_in_ce" icon="terp-personal" context="{'group_by': 'is_active_in_channel'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+		<!-- Tree View Section -->
+		<record id="channel_variant_product_tree_view" model="ir.ui.view">
+			<field name="name">channel.variant.product.tree</field>
+			<field name="model">channel.product.product</field>
+			<field name="arch" type="xml">
+				<tree string="Channel Variant Products Tree View" create="false">
+					<field name="name" />
+					<field name="instance_id" />
+					<field name="merchant_product_no" />
+					<field name="exported_in_channel" />
+					<field name="is_active_in_channel" />
+				</tree>
+			</field>
+		</record>
+		
+		<!-- Form View Section -->
+		<record id="channel_variant_product_form_view" model="ir.ui.view">
+			<field name="name">channel.variant.product.form</field>
+			<field name="model">channel.product.product</field>
+			<field name="arch" type="xml">
+				<form string="Channel Variants Products Form View" create="false">
+					<header>
+						<button name="map_translations" type="object" string="Get Translations"/>
+					</header>
+					<sheet>
+						<div class="oe_title" style="width: 390px;">
+							<h1>
+								<field name="name" class="oe_inline" />
+							</h1>
+						</div>
+						<notebook>
+							<page string="General Infomration">
+								<group string="Channel Engine Details">
+									<group>
+										<field name="instance_id" readonly="1" />
+									</group>
+									<group></group>
+								</group>
+								<group string="Product Details">
+									<group>
+										<field name="merchant_product_no" />
+										<field name="exported_in_channel" readonly="1" />
+										<field name="is_active_in_channel" readonly="1" />
+										<field name="msrp" invisible="1"/>
+										<field name="purchase_price" invisible="1" />
+										<field name="shipping_cost" invisible="1" />
+										<field name="shipping_time" invisible="1" />
+										<field name="category_trail" invisible="1" />
+									</group>
+									<group>
+										<!-- <field name="image_url" required="1"/> -->
+										<field name="channel_product_tmpl_id" readonly="1" />
+										<field name="product_id" readonly="1" />
+										<field name="ean13"/> 
+										<field name="size" invisible="1" />
+										<field name="color" invisible="1" />
+										<field name="channel_stock_type" />
+										<field name="channel_stock_value" />
+									</group>
+								</group>
+								<group string="Description">
+									<field name="description" nolabel="1" />
+								</group>
+							</page>
+							
+							<page name="product_images" string="Product Images">
+		                		<group name="extra_images" string="Product Images">
+		                		   <field name="ce_product_image_ids" class="o_website_sale_image_list" context="{'default_image_name': name, 'default_ce_product_variant_id': active_id}" nolabel="1">
+			                              <kanban string="Product Images" class="o_attachments_previews">
+			                                <field name="id"/>
+			                                <field name="image_name"/> 
+			                                <field name="product_image"/>
+			                                
+			                                <templates>
+			                                    <t t-name="kanban-box">
+			                                        <div class="o_attachment oe_kanban_global_click o_website_sale_image_card">
+			                                            <div class="o_attachment_wrap">
+			                                                <div class="o_image_box">
+			                                                    <div class="o_attachment_image" t-attf-style="background-image:url({{kanban_image('ce.product.images', 'product_image', record.id.raw_value)}});"/>
+			                                                    <div t-attf-class="o_image_overlay" t-att-title="record.image_name.value"/>
+			                                                    <div class="o_website_sale_image_card_title" t-att-title="record.image_name.value">
+			                                                          <field name="image_name"/>  
+			                                                    </div>
+			                                                </div>
+			
+			                                                <t t-set="size" t-value="[record.product_image.value][0]"/>
+			                                                <t t-set="size_status" t-value="'normal'" t-if="size.indexOf('Bytes') !== -1 or ( size.indexOf('Kb') !== -1 and size[2]=='.')"/>
+			                                                <t t-set="size_status" t-value="'warning'" t-elif="( size.indexOf('Kb') !== -1 and size[3]=='.')"/>
+			                                                <t t-set="size_status" t-value="'danger'"  t-else=""/>
+			                                                <t t-set="message" t-value="'Acceptable file size'" t-if="size_status == 'normal'"></t>
+			                                                <t t-set="message" t-value="'Huge file size. The image should be optimized/reduced.'" t-elif="size_status == 'warning'"></t>
+			                                                <t t-set="message" t-value="'Optimization required! Reduce the image size or increase your compression settings.'" t-else=""></t>
+			
+			                                                <span t-attf-class="o_website_sale_image_card_size badge badge-#{size_status}" t-att-title="message">
+			                                                    <t t-esc="record.product_image.value"/>
+			                                                </span>
+			                                            </div>
+			                                        </div>
+			                                    </t>
+			                                </templates>
+			                            	</kanban>
+		                        		</field>		
+		                			</group>
+		                		</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<!-- Action Section -->
+		<record id="channel_variant_product_action" model="ir.actions.act_window">
+			<field name="name">Channel Product</field>
+			<field name="res_model">channel.product.product</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="channel_variant_product_tree_view" />
+		</record>
+
+	</data>		
+</odoo>			

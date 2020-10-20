@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data>
+		<!-- Search View Section -->
+		<record id="channel_engine_instance_search_view"
+			model="ir.ui.view">
+			<field name="name">Channel Engine Search View</field>
+			<field name="model">ce.instance</field>
+
+			<field name="arch" type="xml">
+				<search string="Channel Engine Instance">
+					<field name="name" />
+					<field name="api_key" />
+					<field name="channel_shop_url" />
+				</search>
+			</field>
+		</record>
+
+		<!-- Form View Section -->
+		<record id="channel_engine_instance_form_view"
+			model="ir.ui.view">
+			<field name="name">Channel Engine Instance Credential</field>
+			<field name="model">ce.instance</field>
+			<field name="priority" eval="20" />
+			<field name="arch" type="xml">
+				<form string="Channel Engine Instance Credential">
+					<header>
+						<button name="check_connection" string="Check Connection"
+							type="object" states="not_confirmed" />
+						<button name="set_to_confirm" string="Confirm"
+							type="object" states="not_confirmed" />
+						<button name="reset_to_confirm" string="Reset Confirmation"
+							type="object" states="confirmed" />
+						<button name="load_ce_channels" string="Load Channels"
+							type="object" states="confirmed" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div class="oe_title" style="width: 390px;">
+							<label class="oe_edit_only" for="name"
+								string="Instance Name" />
+							<h1>
+								<field name="name" class="oe_inline" attrs="{'readonly':[('state','in','confirmed')]}" />
+							</h1>
+						</div>
+						<notebook>
+							<page string="General Infomration">
+								<group string="General Information">
+									<group>
+										<field name="warehouse_id" required="1" attrs="{'readonly':[('state','in','confirmed')]}" />
+										<field name="company_id" required="1" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="lang_id" required="1" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+								</group>
+								<group string="Product Information">
+									<group>
+										<field name="shipment_charge_product_id" required="1" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+								</group>
+								<group string="Payment Information">
+									<group>
+										<field name="pricelist_id" required="1" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group></group>
+								</group>
+								<group string="Order Information">
+									<group>
+										<field name="order_prefix" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="is_order_confirm_to_auto_send_ack" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="team_id" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="payment_term_id" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="user_id_erpify" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+								</group>
+								<group string="Fields Mapping">
+									<group>
+										<field name="stock_field" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+									<group>
+										<field name="prod_description_erpify" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+									<group>
+										<field name="prod_title_erpify" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+									<group>
+										<field name="use_product_or_variants" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+									<group>
+										<field name="prod_extra_fields_erpify" widget="many2many_tags" attrs="{'readonly':[('state','in','confirmed')], 'invisible':[('use_product_or_variants','=',False)]}"/>
+									</group>
+									<group>
+										<field name="prod_temp_extra_fields_erpify" widget="many2many_tags" attrs="{'readonly':[('state','in','confirmed')], 'invisible':[('use_product_or_variants','=',True)]}"/>
+									</group>
+									<group>
+										<field name="use_website_images_or_ce_images" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+
+								</group>
+								
+<!-- 								<group string="Automtion Information">
+									<div class="row mt16 o_settings_container">
+										<div class="col-12 col-lg-6 o_setting_box">
+											<div class="o_setting_left_pane">
+												<field name="is_auto_update_products_stock" />
+											</div>
+											<div class="o_setting_right_pane">
+												<label for="is_auto_update_products_stock" />
+												<div class="text-muted">
+													If checked, you can automatically get Update
+													stock from odoo to channel engine at certain intervals
+												</div>
+												<div class="mt16">
+													<div
+														attrs="{'invisible': [('is_auto_update_products_stock', '=', False)]}">
+														<field name="update_ce_stock_interval_number"
+															attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_stock_interval_type"
+															attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_stock_next_execution"
+															attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_stock_user_id"
+															attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+															class="oe_inline" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-12 col-lg-6 o_setting_box">
+											Auto Update Product Price
+											<div class="o_setting_left_pane">
+												<field name="is_auto_update_products_price" />
+											</div>
+											<div class="o_setting_right_pane">
+												<label for="is_auto_update_products_price" />
+												<div class="text-muted">
+													If checked, you can automatically get Update
+													Price from odoo to channel engine at certain intervals
+												</div>
+												<div class="content-group"
+													attrs="{'invisible': [('is_auto_update_products_price', '=', False)]}">
+													<div class="mt16">
+														<label for="id"
+															string="I want to Update Price at every " />
+														<field name="update_ce_price_interval_number"
+															attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_price_interval_type"
+															attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_price_next_execution"
+															attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+															class="oe_inline" />
+														<field name="update_ce_price_user_id"
+															attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+															class="oe_inline" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-12 col-lg-6 o_setting_box">
+											Auto Import Orders
+											<div class="o_setting_left_pane">
+												<field name="is_auto_import_sales_orders" />
+											</div>
+											<div class="o_setting_right_pane">
+												<label for="is_auto_import_sales_orders" />
+												<div class="text-muted">
+													If checked, you can automatically get Orders
+													from channel engine to odoo at certain intervals
+												</div>
+												<div class="content-group"
+													attrs="{'invisible': [('is_auto_import_sales_orders', '=', False)]}">
+													<div class="mt16">
+														<label for="id"
+															string="I want to Import Orders at every " />
+														<field name="import_ce_orders_interval_number"
+															attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+															class="oe_inline" />
+														<field name="import_ce_orders_interval_type"
+															attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+															class="oe_inline" />
+														<field name="import_ce_orders_next_execution"
+															attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+															class="oe_inline" />
+														<field name="import_ce_orders_user_id"
+															attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+															class="oe_inline" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-12 col-lg-6 o_setting_box">
+											Auto shipment
+											<div class="o_setting_left_pane">
+												<field name="is_auto_create_shipments" />
+											</div>
+											<div class="o_setting_right_pane">
+												<label for="is_auto_create_shipments" />
+												<div class="text-muted">
+													If checked, you can automatically send shipment
+													to channel engine to odoo at certain intervals
+												</div>
+												<div class="content-group"
+													attrs="{'invisible': [('is_auto_create_shipments', '=', False)]}">
+													<div class="mt16">
+														<label for="id"
+															string="I want to Send Shipment at every " />
+														<field name="create_ce_shipment_interval_number"
+															attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+															class="oe_inline" />
+														<field name="create_ce_shipment_interval_type"
+															attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+															class="oe_inline" />
+														<field name="create_ce_shipment_next_execution"
+															attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+															class="oe_inline" />
+														<field name="create_ce_shipment_user_id"
+															attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+															class="oe_inline" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</group>
+ -->								
+								
+								
+							</page>
+							<page string="Channel Account Information">
+								<group string="Channel Account Details">
+									<group>
+										<field name="api_key" attrs="{'readonly':[('state','in','confirmed')]}"/>
+									</group>
+									<group>
+										<field name="channel_shop_url" attrs="{'readonly':[('state','in','confirmed')]}" />
+									</group>
+								</group>
+							</page>
+							<page string="Channels Name">
+								<group>
+									<field name="channel_name_ids" nolabel="1">
+										<tree>
+											<field name="channel_id" />
+											<field name="name" />
+											<field name="instance_id" options="{'no_create_edit': True}" />
+											<field name="is_enabled_channel" />
+										</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Tree View Section -->
+		<record id="channel_engine_instance_tree_view"
+			model="ir.ui.view">
+			<field name="name">Channel Engine Instance</field>
+			<field name="model">ce.instance</field>
+			<field name="arch" type="xml">
+				<tree string="Channel Engine Instance Credential">
+					<field name="name" />
+					<field name="api_key" />
+					<field name="channel_shop_url" />
+				</tree>
+			</field>
+		</record>
+
+		<!-- Action View Section -->
+		<record id="channel_engine_instance_action"
+			model="ir.actions.act_window">
+			<field name="name">Channel Engine Instance</field>
+			<field name="res_model">ce.instance</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="channel_engine_instance_tree_view" />
+			<field name="help" type="html">
+				<div>
+					<br />
+					<p>
+						<b>There is no any Channel Engine Instance configured yet.</b>
+					</p>
+
+				</div>
+			</field>
+		</record>
+
+		<!-- Top Parent Menu -->
+		<!-- Main Channel Engine Menu -->
+		<menuitem id="channel_engine_menu" name="Channel Engine"
+			sequence="20" web_icon="channel_engine,static/description/icon.png"
+			groups="channel_engine.ce_user_group" />
+
+		<!-- Parent/Top Menu Section -->
+		<menuitem id="channel_engine_config_menu"
+			name="Configuration" parent="channel_engine_menu" sequence="6"
+			groups="channel_engine.ce_manager_group" />
+
+		<!-- Child Menu Section -->
+		<menuitem id="channel_engine_instance_menu" name="Instances"
+			parent="channel_engine_config_menu" sequence="2"
+			action="channel_engine_instance_action" />
+
+	</data>
+</odoo>			

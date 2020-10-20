@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        
+        <!-- Channel Engine Product Brand -->
+        
+        <!-- Search View Section -->
+        <record id="channel_product_brand_search_view" model="ir.ui.view">
+            <field name="name">channel.product.brand.select</field>
+            <field name="model">channel.product.brand</field>
+			<field name="arch" type="xml">
+				<search string="Channel Product Brand Search">
+					<field name="name" />
+					<field name="partner_id"/>
+					<group expand="0" name="group_by" string="Group By">
+						<filter string="Partner Wise" name="partner_wise" context="{'group_by':'partner_id'}" />
+					</group>
+				</search>
+			</field>
+        </record>
+        
+        <!-- Tree View Section -->
+        <record id="channel_product_brand_tree_view" model="ir.ui.view" >
+            <field name="name">channel.product.brand.tree</field>
+            <field name="model">channel.product.brand</field>
+            <field name="arch" type="xml">
+                <tree string="Channel Product Brand Tree">
+                    <field name="name" />
+                    <field name="partner_id" />
+                </tree>
+            </field>
+		</record>
+        
+        <!-- Form View Section -->
+        <record id="channel_product_brand_form_view"  model="ir.ui.view" >
+            <field name="name">channel.product.brand.form</field>
+            <field name="model">channel.product.brand</field>
+            <field name="arch" type="xml">
+                <form string="Channel Product Brand Form">
+                  <sheet>
+                      <field name="brand_logo" widget="image" class="oe_avatar oe_left"/>
+                      <div class="oe_title">
+	                     <div class="oe_edit_only">
+	                       <label for="name" string="Brand Name"/>
+	                     </div>
+	                     <h1>
+	                       <field name="name" required="1"/>
+	                     </h1>
+                      </div>
+                      <group>
+                      	<group>
+                      		<field name="partner_id" required="0" />
+                      	</group>
+                      	<group></group>
+                      </group>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Action Section -->
+        <record id="channel_product_brand_action"  model="ir.actions.act_window">
+            <field name="name">Product Brand</field>
+            <field name="res_model">channel.product.brand</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="channel_product_brand_tree_view" />
+            <field name="search_view_id" ref="channel_product_brand_search_view"/>
+        </record>
+               	
+    </data>
+</odoo>

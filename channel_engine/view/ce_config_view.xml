@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+	<data>
+
+		<!-- CE Create Instance Section -->
+		<!-- Form View Section -->
+		<record id="view_res_config_ce_instance" model="ir.ui.view">
+			<field name="name">Configure Instance</field>
+			<field name="model">res.config.ce.instance</field>
+			<field name="arch" type="xml">
+				<form string="Configure Instance" class="oe_form_configuration">
+					<group>
+						<group>
+							<field name="ce_name" required="1" />
+						</group>
+						<group>
+							<field name="ce_company_id" required="1" />
+							<field name='ce_warehouse_id' required="1" />
+						</group>
+						<group string="Channel Account Information">
+							<field name='ce_api_key' required="1" />
+							<field name='ce_shop_url' required="1" />
+						</group>
+					</group>
+
+					<footer>
+						<button string="Create" name="create_ce_instance"
+							type="object" class="oe_highlight" />
+						<button string="Cancel" special="cancel" name="cancel"
+							class="oe_link" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<!-- Action Section -->
+		<record id="res_config_action_ce_instance"
+			model="ir.actions.act_window">
+			<field name="name">ce Instance</field>
+			<field name="res_model">res.config.ce.instance</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="view_id" ref="view_res_config_ce_instance" />
+		</record>
+
+
+		<!-- ce configuration Setting -->
+		<!-- Form View Section -->
+		<record id="view_ce_config_settings" model="ir.ui.view">
+			<field name="name">CE Settings</field>
+			<field name="model">res.config.settings</field>
+			<field name="inherit_id"
+				ref="base.res_config_settings_view_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//div[hasclass('settings')]" position="inside">
+					<!-- Start Section -->
+					<div class="app_settings_block" string="CE Instances"
+						data-string="CE Instances" data-key="channel_engine">
+						<!-- CE Instance -->
+						<div name="ce_instance_config">
+							<h2 style="font-size:25px;background-color:#e9ecef;">CE Instances</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 o_setting_box">
+									<label for="ce_instance_id" string="Select Instance" />
+									<field name="ce_instance_id" widget="selection"
+										attrs="{'required':[('ce_instance_id','!=',False)]}"
+										class="oe_inline" />
+									<button string="Create New CE Instance"
+										icon="fa-arrow-right text-success"
+										name="%(res_config_action_ce_instance)d" type="action"
+										class="oe_link" />
+								</div>
+							</div>
+						</div>
+
+						<!-- General Information -->
+						<div name="ce_general_information"
+							attrs="{'invisible':[('ce_instance_id','=',False)]}">
+							<h2>General Information</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-xs-12 col-md-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<div>
+											<label for="ce_warehouse_id" />
+											<field name="ce_warehouse_id" class="oe_inline"
+												attrs="{'required':[('ce_instance_id','!=',False)]}" />
+											<div class="text-muted">
+												Select Warehouse
+											</div>
+										</div>
+										<div>
+											<label for="ce_company_id" />
+											<field name="ce_company_id" class="oe_inline"
+												attrs="{'required':[('ce_instance_id','!=',False)]}" />
+											<div class="text-muted">
+												Select Company
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-xs-12 col-md-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<div>
+											<label for="ce_lang_id" />
+											<field name="ce_lang_id" class="oe_inline"
+												attrs="{'required':[('ce_instance_id','!=',False)]}" />
+											<div class="text-muted">
+												Select Language
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+
+							<!-- Product Information -->
+
+							<div name="ce_product_information"
+								attrs="{'invisible':[('ce_instance_id','=',False)]}">
+								<h2>Product Information</h2>
+								<div class="row mt16 o_settings_container">
+									<div class="col-12 col-lg-6 o_setting_box">
+										<div class="o_setting_right_pane">
+											<label for="ce_shipment_charge_product_id" />
+											<div class="content-group">
+												<div class="mt16">
+													<field name="ce_shipment_charge_product_id"
+														class="oe_inline"
+														attrs="{'required':[('ce_instance_id','!=',False)]}" />
+												</div>
+												<div class="text-muted">
+													Product to be select for Shipment Fee Order
+													Line in an Order
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Payment Information -->
+							<div name="ce_payment_information"
+								attrs="{'invisible':[('ce_instance_id','=',False)]}">
+								<h2>Payment Information</h2>
+								<div class="row mt16 o_settings_container">
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<div class="o_setting_right_pane">
+											<label for="ce_pricelist_id" />
+											<div class="content-group">
+												<div class="mt16">
+													<field name="ce_pricelist_id"
+														attrs="{'required':[('ce_instance_id','!=',False)]}"
+														class="oe_inline" />
+												</div>
+												<div class="text-muted">
+													Select Pricelist
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+
+							<!-- Order Information -->
+							<div name="ce_order_information"
+								attrs="{'invisible':[('ce_instance_id','=',False)]}">
+								<h2>Order Information</h2>
+								<div class="row mt16 o_settings_container">
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<div class="o_setting_right_pane">
+											<label for="ce_order_prefix" />
+											<div class="content-group">
+												<div class="mt16">
+													<field name="ce_order_prefix" class="oe_inline" />
+												</div>
+												<div class="text-muted">
+													Select order prefix for channel order
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Auto Send Acknowledgement -->
+									<div class="col-12 col-lg-6 o_setting_box">
+										<div class="">
+											<div class="o_setting_left_pane">
+												<field name="is_order_confirm_to_auto_send_ack" />
+											</div>
+											<div class="o_setting_right_pane">
+												<label for="is_order_confirm_to_auto_send_ack" />
+												<div class="text-muted">
+													Checked True to auto send order
+													acknowledgement in channel engine
+													when channel sale order
+													confirm.
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<!-- Cron Configuration -->
+							<div name="ce_cron_information"
+								attrs="{'invisible':[('ce_instance_id','=',False)]}">
+								<h2>Cron Configuration</h2>
+								<div class="row mt16 o_settings_container">
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<!-- Auto Update Product Stock -->
+										<div class="o_setting_left_pane">
+											<field name="is_auto_update_products_stock" />
+										</div>
+										<div class="o_setting_right_pane">
+											<label for="is_auto_update_products_stock" />
+											<div class="text-muted">
+												If checked, you can automatically get Update
+												stock from odoo to channel engine at certain intervals
+											</div>
+											<div class="content-group"
+												attrs="{'invisible': [('is_auto_update_products_stock', '=', False)]}">
+												<div class="mt16">
+													<label for="is_auto_update_products_stock"
+														string="I want to Update Stock at every " />
+													<field name="update_ce_stock_interval_number"
+														attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_stock_interval_type"
+														attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_stock_next_execution"
+														attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_stock_user_id"
+														attrs="{'required': [('is_auto_update_products_stock', '=', True)]}"
+														class="oe_inline" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<!-- Auto Update Product Price -->
+										<div class="o_setting_left_pane">
+											<field name="is_auto_update_products_price" />
+										</div>
+										<div class="o_setting_right_pane">
+											<label for="is_auto_update_products_price" />
+											<div class="text-muted">
+												If checked, you can automatically get Update
+												Price from odoo to channel engine at certain intervals
+											</div>
+											<div class="content-group"
+												attrs="{'invisible': [('is_auto_update_products_price', '=', False)]}">
+												<div class="mt16">
+													<label for="is_auto_update_products_price"
+														string="I want to Update Price at every " />
+													<field name="update_ce_price_interval_number"
+														attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_price_interval_type"
+														attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_price_next_execution"
+														attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+														class="oe_inline" />
+													<field name="update_ce_price_user_id"
+														attrs="{'required': [('is_auto_update_products_price', '=', True)]}"
+														class="oe_inline" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<!-- Auto Import Orders -->
+										<div class="o_setting_left_pane">
+											<field name="is_auto_import_sales_orders" />
+										</div>
+										<div class="o_setting_right_pane">
+											<label for="is_auto_import_sales_orders" />
+											<div class="text-muted">
+												If checked, you can automatically get Orders
+												from channel engine to odoo at certain intervals
+											</div>
+											<div class="content-group"
+												attrs="{'invisible': [('is_auto_import_sales_orders', '=', False)]}">
+												<div class="mt16">
+													<label for="is_auto_import_sales_orders"
+														string="I want to Import Orders at every " />
+													<field name="import_ce_orders_interval_number"
+														attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_orders_interval_type"
+														attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_orders_next_execution"
+														attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_orders_user_id"
+														attrs="{'required': [('is_auto_import_sales_orders', '=', True)]}"
+														class="oe_inline" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<!-- Auto shipment -->
+										<div class="o_setting_left_pane">
+											<field name="is_auto_create_shipments" />
+										</div>
+										<div class="o_setting_right_pane">
+											<label for="is_auto_create_shipments" />
+											<div class="text-muted">
+												If checked, you can automatically send
+												shipment
+												to channel engine to odoo at certain intervals
+											</div>
+											<div class="content-group"
+												attrs="{'invisible': [('is_auto_create_shipments', '=', False)]}">
+												<div class="mt16">
+													<label for="is_auto_create_shipments"
+														string="I want to Send Shipment at every " />
+													<field name="create_ce_shipment_interval_number"
+														attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+														class="oe_inline" />
+													<field name="create_ce_shipment_interval_type"
+														attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+														class="oe_inline" />
+													<field name="create_ce_shipment_next_execution"
+														attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+														class="oe_inline" />
+													<field name="create_ce_shipment_user_id"
+														attrs="{'required': [('is_auto_create_shipments', '=', True)]}"
+														class="oe_inline" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-12 col-lg-6 o_setting_box">
+										<!-- Auto Import Orders -->
+										<div class="o_setting_left_pane">
+											<field name="is_auto_import_ce_products" />
+										</div>
+										<div class="o_setting_right_pane">
+											<label for="is_auto_import_ce_products" />
+											<div class="text-muted">
+												If checked, you can automatically Import
+												Products
+												from channel engine to Odoo at certain intervals
+											</div>
+											<div class="content-group"
+												attrs="{'invisible': [('is_auto_import_ce_products', '=', False)]}">
+												<div class="mt16">
+													<label for="is_auto_import_ce_products"
+														string="I want to Import Orders at every " />
+													<field name="import_ce_products_interval_number"
+														attrs="{'required': [('is_auto_import_ce_products', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_products_interval_type"
+														attrs="{'required': [('is_auto_import_ce_products', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_products_next_execution"
+														attrs="{'required': [('is_auto_import_ce_products', '=', True)]}"
+														class="oe_inline" />
+													<field name="import_ce_products_user_id"
+														attrs="{'required': [('is_auto_import_ce_products', '=', True)]}"
+														class="oe_inline" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- ./End Section -->
+				</xpath>
+			</field>
+		</record>
+
+		<!-- Action Section -->
+		<record id="action_ce_config" model="ir.actions.act_window">
+			<field name="name">Settings</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.config.settings</field>
+			<field name="view_mode">form</field>
+			<field name="target">inline</field>
+			<field name="context">{'module' : 'channel_engine'}</field>
+		</record>
+
+		<!-- Child Menu Section -->
+		<menuitem id="menu_ce_config" name="Channel Settings"
+			parent="channel_engine.channel_engine_config_menu" sequence="1"
+			action="action_ce_config" />
+
+	</data>
+</odoo>

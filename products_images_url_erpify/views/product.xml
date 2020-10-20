@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="product_form_view_main_image_url">
+        <field name="name">product.product.image.url</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <field name="default_code" position="before">
+                <field name="main_image_url" string="Main Image URL" groups="base.group_system"/>
+                <field name="main_image_id" groups="base.group_system" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_product_image_form_image_url">
+        <field name="name">product.image.form.image.url</field>
+        <field name="model">product.image</field>
+        <field name="inherit_id" ref="website_sale.view_product_image_form"/>
+        <field name="arch" type="xml">
+            <field name="image_1920" position="attributes">
+                <attribute name="filename">product_image_full_name</attribute>
+            </field>
+            <xpath expr="//field[@name='name']" position="after">
+                <group><field name="image_url" readonly="True" widget="url"/></group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

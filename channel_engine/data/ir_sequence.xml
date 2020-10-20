@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data noupdate="1">
+		<!-- CE Log Sequence Section -->
+		<record id="ce_job_log_book_seq" model="ir.sequence">
+			<field name="name">CE Process Job Sequence</field>
+			<field name="code">channel.log.book</field>
+			<field name="padding">1</field>
+			<field name="prefix">CE_LOG</field>
+			<field name="company_id" eval="False" />
+		</record>
+	</data>
+</odoo>

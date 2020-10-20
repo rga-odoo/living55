@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+	<data>
+	
+		<!-- Form View Section -->
+		<!-- CE Product Images -->
+	    <record id="ce_product_images_form_view" model="ir.ui.view">
+	        <field name="name">ce.product.images.form</field>
+	        <field name="model">ce.product.images</field>
+	        <field name="arch" type="xml">
+	            <form string="Product Images">
+	                <div class="row o_website_sale_image_modal">
+	                    <div class="col-md-6 col-xl-5">
+	                        <div class="oe_title">
+	                            <label class="small text-muted" for="image_name" string="Product Image Name"/>
+	                            <h2><field name="image_name" placeholder="Product Image Name" required="True"/></h2>
+	                            <field name="ce_product_variant_id" invisible="1"/>
+	                            
+	                            <label class="small text-muted" for="ce_image_url" string="Image URL"/>
+	                            <field name="ce_image_url" readonly="1" />
+	                            <field name="product_image_full_name" readonly="0" force_save="1" invisible="1" />
+	                        </div> 
+	                    </div>
+	                    <div class="col-md-6 col-xl-7 text-center o_website_sale_image_modal_container">
+	                        <field name="product_image" required="1" widget="image" filename="product_image_full_name" />
+	                    </div>
+	                </div>                 
+	            </form>
+	        </field>
+	    </record>
+	
+	</data>
+</odoo>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data>
+		
+		<!-- Channel Engine Product Template -->
+		<!-- Search View Section  -->
+ 		<record id="channel_product_template_search_view" model="ir.ui.view">
+			<field name="name">channel.product.template.search</field>
+			<field name="model">channel.product.template</field>
+
+			<field name="arch" type="xml">
+				<search string="Channel Product Search View">
+					<field name="name" />
+					<field name="instance_id" string="Channel Instance" />
+					<filter name="exported_in_channel_filter" string="Exported In Channel" domain="[('exported_in_channel','=',True)]" />
+					<filter name="not_exported_in_channel_filter" string="Not Exported In Channel" domain="[('exported_in_channel','=',False)]" />
+					<group expand="0" string="Group By">
+						<filter string="Channel Instance" name="channel_instance" icon="terp-personal" context="{'group_by':'instance_id'}" />
+					</group>
+				</search>
+			</field>
+		</record> 
+		
+		<!-- Tree View Section -->
+		<record id="channel_product_template_tree_view" model="ir.ui.view">
+			<field name="name">channel.product.template.tree</field>
+			<field name="model">channel.product.template</field>
+			<field name="arch" type="xml">
+				<tree string="Channel Product Tree View" create="false">
+					<field name="name" />
+					<field name="instance_id" />
+					<field name="exported_in_channel" force_save="1" />
+					<field name="count_total_variants" />
+					<field name="count_exported_variants" />
+					<field name="count_active_variants" /> 
+				</tree>
+			</field>
+		</record>
+		
+		<!-- Form View Section  -->
+		<record id="channel_product_template_form_view" model="ir.ui.view">
+			<field name="name">channel.product.template.form</field>
+			<field name="model">channel.product.template</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Channel Engine Product Form View" create="false">
+					<sheet>
+						<div class="oe_title" style="width: 390px;">
+							<label class="oe_edit_only" for="name" string="Product Name" />
+							<h1>
+								<field name="name" class="oe_inline" />
+							</h1>
+						</div>
+						<notebook>
+							<page string="General Infomration">
+								<group string="Channel Engine Details">
+									<group>
+										<field name="instance_id" readonly="1" />
+										<field name="product_tmpl_id" readonly="1"/>
+									</group>
+									<group>
+										<field name="exported_in_channel" readonly="1"  />
+									</group>
+								</group>
+								<group string="Product Details">
+									<group>
+										<field name="product_brand_id" />
+									</group>
+									<group>
+										<!-- attrs="{'readonly':[('exported_in_channel','=',True)]}" -->
+										<field name="product_type" required="1" readonly="1" />
+									</group>
+								</group>
+							</page>
+							<page string="Variants">
+								<group>
+									<field name="channel_variant_ids" nolabel="1"/>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<!-- Action Section -->
+		<record id="channel_product_template_action" model="ir.actions.act_window">
+			<field name="name">Products</field>
+			<field name="res_model">channel.product.template</field>
+			<field name="view_id" ref="channel_product_template_tree_view" />
+			<field name="help" type="html">
+				<div class="">
+					<br />
+					<br />
+					<br />
+					<p>
+						<b>There are no any Channel Engine Product Created yet</b>
+					</p>
+					<p>
+						You can't create Channel Engine products directly from here. In order to
+						create products for Channel Engine,
+						You need to go to menu
+						<b>Sales >> Catalog >> Products</b>
+						and in list view of Product, select one or more products which you
+						want to export to Channel Engine.
+						At the top side, under the "More" section, you will find an option
+						<b>"Prepare Product for Export in Channel Engine"</b>
+						.
+						Clicking on that option, you will be asked to select Channel Engine Instance.After
+						those products successfully prepared for Channel Engine, you can see all of
+						them over here in this menu.
+						However here you can open those products and add more Channel Engine specific
+						attribute values to products. Once all products are well
+						configured with proper values, you can export
+						them to Channel Engine.
+					</p>
+				</div>
+			</field>
+		</record>
+		
+		<!-- Parent Menu Section -->
+		<!-- Products -->
+		<menuitem id="channel_product_parent_menu" name="Products"
+			parent="channel_engine.channel_engine_menu" sequence="3" />
+		
+		<!-- Child Menu Section -->
+		<!-- Product -->
+		<menuitem id="channel_product_menu" name="Products"
+			parent="channel_engine.channel_product_parent_menu" sequence="1"
+			action="channel_product_template_action" />
+			
+		<!-- Child Menu Section -->
+		<!-- Variants Product -->
+		<menuitem id="channel_variant_product_menu" name="Product Variants"
+			parent="channel_engine.channel_product_parent_menu" sequence="2"
+			action="channel_variant_product_action" />
+			
+        <!-- Child Menu Section -->
+		<!-- Product Brand -->
+        <menuitem id="channel_product_brand_menu" 
+        	name="Product Brand" 
+        	parent="channel_engine.channel_product_parent_menu" sequence="3" action="channel_product_brand_action"/>
+
+	</data>		
+</odoo>			
