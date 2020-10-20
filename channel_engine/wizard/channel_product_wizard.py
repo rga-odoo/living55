@@ -9,8 +9,6 @@ class ChannelProductWizard(models.TransientModel):
     is_export_or_update_price = fields.Boolean(string='Export/Update Price',default=False,help="If you want to export/update product with price so Checked True other wise False.")
     is_export_or_update_stock = fields.Boolean(string='Export/Update Stock',default=False,help="If you want to export/update product with stock so Checked True other wise False.")
 
-    
-
     def export_product_in_channel(self):
         self.ensure_one()
         channel_instance_obj = self.env['ce.instance']

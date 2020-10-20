@@ -425,6 +425,7 @@ class SaleOrder(models.Model):
                 'message': 'Exception when calling OrderApi->order_get_by_filter: %s\n' % (e),
             }
             channel_log_book_line_obj.create(job_line_val)
+            return True
         if results:
             total_count = results.get('TotalCount', 0)
             resp_success = results.get('Success', False)
@@ -468,6 +469,7 @@ class SaleOrder(models.Model):
                     'message': 'Exception when calling OrderApi->order_acknowledge: %s\n' % (e),
                 }
                 channel_log_book_line_obj.create(job_line_val)
+                continue
 
             if results:
                 resp_success = results.get('Success', False)

@@ -46,7 +46,8 @@ class ChannelEngine(object):
                 --> https://erpfy-dev.channelengine.net/api/v2/products?api_key=xxxxxxxxxx
             @param insatnce: Current instance object.           
             @return result_dict: Return response dictionary(In JSON Format) of Orders API.
-        """        
+        """   
+        print("ca;;;;;")     
         channel_shop_url_path = instance.channel_shop_url if instance.channel_shop_url[-1]=='/' else (instance.channel_shop_url + '/')
         channel_products_api_path = 'api/v2/products?'
         channel_api_key_path = 'api_key=%s' % (instance.api_key)
@@ -54,6 +55,7 @@ class ChannelEngine(object):
         redirect_url = channel_shop_url_path + channel_products_api_path + channel_api_key_path
         headers = {"content-type": "application/json", "Accept": "application/json"}
         result_dict = requests.post(url=redirect_url, data=json.dumps(data), headers=headers)
+        print(result_dict.status_code)
         return result_dict.json()
 
     def get_channel_acknowledge_order_api_object(self, instance, data):

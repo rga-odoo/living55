@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import cgi, re
+import cgi, re, html
 from odoo.exceptions import Warning
 from odoo import models, fields, api, _
 from odoo.addons.channel_engine.channel_engine_api.api import ChannelEngine
@@ -50,10 +50,10 @@ class ChannelProductTemplate(models.Model):
         channel_product_product_obj = self.env['channel.product.product']
         
         odoo_product_id = variant and variant.product_id or False
-        prod_name = self.cleanhtml(cgi.escape(variant.get_title() or channel_product_template.get_title()))
+        prod_name = self.cleanhtml(html.escape(variant.get_title() or channel_product_template.get_title()))
         prod_brand_name = channel_product_template.product_brand_id and channel_product_template.product_brand_id.name or '' 
         merchant_prod_no = variant.merchant_product_no or variant.product_id.default_code
-        prod_description = self.cleanhtml(cgi.escape(variant.get_description() or channel_product_template.get_description()))
+        prod_description = self.cleanhtml(html.escape(variant.get_description() or channel_product_template.get_description()))
         ean13 = variant.ean13 or ''
         warehouse_id = instance.warehouse_id and instance.warehouse_id.id        
         stock = channel_product_product_obj.get_channel_product_stock(variant, warehouse_id, instance.stock_field.name)
@@ -86,7 +86,7 @@ class ChannelProductTemplate(models.Model):
         # Prepare Image Dictionary
         if instance.use_website_images_or_ce_images:
             image_ids = variant.product_id.product_template_image_ids
-            if variant.product_id.image_1920:
+            if variant.product_id.main_image_url:
                 image_url_erpify = variant.product_id.main_image_url
                 product_dict[0].update({'ImageUrl': image_url_erpify})
             image_url_kyes = [
@@ -129,7 +129,6 @@ class ChannelProductTemplate(models.Model):
                                "Type": "TEXT", "IsPublic": True})
 
         product_dict[0].update({"ExtraData": e_data})
-        print(product_dict)
         return product_dict or {}
 
     def create_individual_item(self, channel_product_template, instance, is_publish_in_channel, is_export_or_update_price, is_export_or_update_stock):
@@ -162,35 +161,36 @@ class ChannelProductTemplate(models.Model):
                                     'message':'Exception when calling ProductApi->product_create: %s\n' % (e),
                                 }
                 channel_log_book_line_obj.create(job_line_val)
-            if not results:
-                results = {}
-            resp_results = results
-            resp_accepted_count = resp_results.get('Content', {}).get('AcceptedCount', False)
-            resp_rejected_count = resp_results.get('Content', {}).get('RejectedCount', False)
-            resp_success = resp_results.get('Success', False)
-            if resp_success and resp_accepted_count == len(variant):
-                if (product_counter == 0): variant.channel_product_tmpl_id.write({'exported_in_channel':True})
-                variant.write({'exported_in_channel':True})
-                self._cr.commit()
-            elif resp_rejected_count == 1:
-                if not job:
-                    value = {
-                            'instance_id':instance.id,
-                            'message':'Export Product to channel engine.',
-                            'application':'export_product',
-                            'operation_type':'export',
-                            'skip_process':True
-                           }             
-                    job = channel_log_book_obj.create(value)
-                job_line_val = {    
-                                    'channel_order_ref':variant.name,
-                                    'job_id':job.id,
-                                    'log_type':'error',
-                                    'action_type':'skip_line',
-                                    'operation_type':'export',
-                                    'message':'%s' % (str(resp_results.get('Content'))),
-                                }
-                channel_log_book_line_obj.create(job_line_val)
+                continue
+            
+            if results:
+                resp_results = results
+                resp_accepted_count = resp_results.get('Content', {}).get('AcceptedCount', False)
+                resp_rejected_count = resp_results.get('Content', {}).get('RejectedCount', False)
+                resp_success = resp_results.get('Success', False)
+                if resp_success and resp_accepted_count == len(variant):
+                    if (product_counter == 0): variant.channel_product_tmpl_id.write({'exported_in_channel':True})
+                    variant.write({'exported_in_channel':True})
+                    self._cr.commit()
+                elif resp_rejected_count == 1:
+                    if not job:
+                        value = {
+                                'instance_id':instance.id,
+                                'message':'Export Product to channel engine.',
+                                'application':'export_product',
+                                'operation_type':'export',
+                                'skip_process':True
+                               }             
+                        job = channel_log_book_obj.create(value)
+                    job_line_val = {    
+                                        'channel_order_ref':variant.name,
+                                        'job_id':job.id,
+                                        'log_type':'error',
+                                        'action_type':'skip_line',
+                                        'operation_type':'export',
+                                        'message':'%s' % (str(resp_results.get('Content'))),
+                                    }
+                    channel_log_book_line_obj.create(job_line_val)
         return True
 
     def prepare_vartiation_item_dict(self, channel_product_template, variant, parent_merchant_product_no, instance, product_type, is_publish_in_channel, product_counter, is_export_or_update_price, is_export_or_update_stock):
@@ -198,9 +198,9 @@ class ChannelProductTemplate(models.Model):
         product_attribute_obj = self.env['product.attribute']
         
         odoo_product_id = variant and variant.product_id or False
-        prod_name = self.cleanhtml(cgi.escape(variant.get_title() or channel_product_template.get_title()))
+        prod_name = self.cleanhtml(html.escape(variant.get_title() or channel_product_template.get_title()))
         merchant_prod_no = variant.merchant_product_no or variant.product_id.default_code
-        prod_description = self.cleanhtml(cgi.escape(variant.get_description() or channel_product_template.get_description()))
+        prod_description = self.cleanhtml(html.escape(variant.get_description() or channel_product_template.get_description()))
         prod_brand_name = channel_product_template.product_brand_id and channel_product_template.product_brand_id.name or '' 
         ean13 = variant.ean13 or ''
         # image_url = variant.image_url
@@ -261,7 +261,7 @@ class ChannelProductTemplate(models.Model):
         # Prepare Image Dictionary
         if instance.use_website_images_or_ce_images:
             image_ids = variant.product_id.product_template_image_ids
-            if variant.product_id.image:
+            if variant.product_id.main_image_url:
                 image_url_erpify = variant.product_id.main_image_url
                 product_dict[0].update({'ImageUrl': image_url_erpify})
             image_url_kyes = [
@@ -301,7 +301,7 @@ class ChannelProductTemplate(models.Model):
             for f in instance.prod_temp_extra_fields_erpify:
                 e_data.append({"key": f.field_description, "Value": channel_product_template.product_tmpl_id[f.name],
                                "Type": "TEXT", "IsPublic": True})
-        product_dict[0].update({'ExtraData': product_dict.get('ExtraData', []) + e_data})
+        product_dict[0].update({'ExtraData': product_dict[0].get('ExtraData', []) + e_data})
         return product_dict or {}
 
     def create_variation_item(self, channel_product_template, instance, is_publish_in_channel, is_export_or_update_price, is_export_or_update_stock):
@@ -336,36 +336,37 @@ class ChannelProductTemplate(models.Model):
                                     'message':'Exception when calling ProductApi->product_create: %s\n' % (e),
                                 }
                 channel_log_book_line_obj.create(job_line_val)
-            if not results:
-                results = {}
-            resp_results = results
-            resp_accepted_count = resp_results.get('Content').get('AcceptedCount')
-            resp_rejected_count = resp_results.get('Content').get('RejectedCount')
-            resp_success = resp_results.get('Success', False)
-            if resp_success and resp_accepted_count == len(variant):
-                if (product_counter == 0): variant.channel_product_tmpl_id.write({'exported_in_channel':True})
-                variant.write({'exported_in_channel':True})
-                self._cr.commit()
-            elif resp_rejected_count == 1:
-                if not job:
-                    value = {
-                            'instance_id':instance.id,
-                            'message':'Export Product to channel engine.',
-                            'application':'export_product',
-                            'operation_type':'export',
-                            'skip_process':True
-                           }             
-                    job = channel_log_book_obj.create(value)
-                
-                job_line_val = {    
-                                    'channel_order_ref':variant.name,
-                                    'job_id':job.id,
-                                    'log_type':'error',
-                                    'action_type':'skip_line',
-                                    'operation_type':'export',
-                                    'message':'%s' % (str(resp_results.get('Content'))),
-                                }
-                channel_log_book_line_obj.create(job_line_val)
+                continue
+            
+            if results:
+                resp_results = results
+                resp_accepted_count = resp_results.get('Content').get('AcceptedCount')
+                resp_rejected_count = resp_results.get('Content').get('RejectedCount')
+                resp_success = resp_results.get('Success', False)
+                if resp_success and resp_accepted_count == len(variant):
+                    if (product_counter == 0): variant.channel_product_tmpl_id.write({'exported_in_channel':True})
+                    variant.write({'exported_in_channel':True})
+                    self._cr.commit()
+                elif resp_rejected_count == 1:
+                    if not job:
+                        value = {
+                                'instance_id':instance.id,
+                                'message':'Export Product to channel engine.',
+                                'application':'export_product',
+                                'operation_type':'export',
+                                'skip_process':True
+                               }             
+                        job = channel_log_book_obj.create(value)
+                    
+                    job_line_val = {    
+                                        'channel_order_ref':variant.name,
+                                        'job_id':job.id,
+                                        'log_type':'error',
+                                        'action_type':'skip_line',
+                                        'operation_type':'export',
+                                        'message':'%s' % (str(resp_results.get('Content'))),
+                                    }
+                    channel_log_book_line_obj.create(job_line_val)
         return True
 
     def update_individual_item(self, instance, channel_product_template):
@@ -399,6 +400,7 @@ class ChannelProductTemplate(models.Model):
                                     'message':'Exception when calling ProductApi->product_create(Update Product Time): %s\n' % (e),
                                 }
                 channel_log_book_line_obj.create(job_line_val)
+                continue
             
             if results:
                 resp_results = results
@@ -465,6 +467,7 @@ class ChannelProductTemplate(models.Model):
                                     'message':'Exception when calling ProductApi->product_create(Update Product Time): %s\n' % (e),
                                 }
                 channel_log_book_line_obj.create(job_line_val)
+                continue
                 
             if results:
                 resp_results = results
@@ -623,6 +626,8 @@ class ChannelProductTemplate(models.Model):
                     'message': 'Exception when calling ProductApi->get_products(Import Products Time): %s\n' % (e),
                 }
                 channel_log_book_line_obj.create(job_line_val)
+                continue
+            
             if results:
                 total_count = results.get('TotalCount', 0)
                 resp_success = results.get('Success', False)
