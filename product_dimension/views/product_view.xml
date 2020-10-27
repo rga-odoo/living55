@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<odoo>
+	<record model="ir.ui.view"
+		id="product_dimension_product_normal_form_view">
+		<field name="name">product_dimension_product_normal_form_view</field>
+		<field name="model">product.product</field>
+		<field name="inherit_id" ref="product.product_normal_form_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//div[@name='weight']" position="after">
+				<field name="dimensional_uom_id"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_length" string="Length"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_height" string="Height"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_width" string="Width"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view"
+		id="product_dimension_product_template_only_form_view">
+		<field name="name">product_dimension_product_template_only_form_view
+		</field>
+		<field name="model">product.template</field>
+		<field name="inherit_id"
+			ref="product.product_template_only_form_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//div[@name='weight']" position="after">
+				<field name="dimensional_uom_id"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_length" string="Length"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_height" string="Height"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+				<field name="product_width" string="Width"
+					attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}" />
+			</xpath>
+		</field>
+	</record>
+</odoo>

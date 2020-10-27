@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data noupdate="1">
+    
+    	<!-- Record Rules -->
+        <!-- Multi - Company Rules -->
+    	<record id="ce_instance_multi_company_rule" model="ir.rule">
+	        <field name="name">Channel Engine Instance Multi-Company</field>
+	        <field name="model_id" ref="model_ce_instance"/>
+	        <field name="global" eval="True"/>
+	        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+	    </record>
+
+		<!-- Groups Access Rights -->
+		<!-- Access Rights Category -->
+		<record id="ce_groups_category" model="ir.module.category">
+            <field name="name">Channel Engine</field>
+            <field name="description">Channel Engine User Access Rites</field>
+            <field name="sequence">100</field>
+        </record>
+		
+		<!-- User Groups -->
+        <record id="ce_user_group" model="res.groups">
+            <field name="name">User</field>
+	        <field name="implied_ids" eval="[(4,ref('sales_team.group_sale_salesman_all_leads')),(4,ref('stock.group_tracking_lot')),(4,ref('account.group_account_invoice'))]" />
+            <field name="category_id" ref="ce_groups_category"/>
+        </record>
+        
+		<!-- Manager Groups -->
+        <record id="ce_manager_group" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="ce_groups_category"/>
+	        <field name="implied_ids" eval="[(4,ref('channel_engine.ce_user_group')),(4,ref('stock.group_stock_manager')),(4,ref('sales_team.group_sale_manager')),(4,ref('account.group_account_user')),(4,ref('base.group_erp_manager'))]"/>
+			<field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+	</data>
+</odoo>
